@@ -417,6 +417,13 @@ body {
     margin-bottom: 0.5rem;
 }
 
+.timeline-company {
+    color: var(--accent);
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 0.3rem;
+}
+
 .timeline-date {
     color: var(--secondary);
     font-weight: 600;

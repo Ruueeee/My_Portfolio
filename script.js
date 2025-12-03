@@ -200,7 +200,27 @@ function animate() {
 class ContactForm {
     constructor() {
         this.form = document.getElementById('contactForm');
+        // Obfuscated credentials for basic protection
+        this._k = 'portfolio2025';
         this.init();
+    }
+
+    // Deobfuscation method
+    _d(e) {
+        const d = atob(e);
+        let r = '';
+        for (let i = 0; i < d.length; i++) {
+            r += String.fromCharCode(d.charCodeAt(i) ^ this._k.charCodeAt(i % this._k.length));
+        }
+        return r;
+    }
+
+    // Get credentials
+    _c() {
+        // Encrypted with XOR + Base64
+        const t = 'SFxFQ1JXVVhdAgpzdDhXJBYHI1xcHFhgCkc9BTAWDQwpIR11BURnIhsQAlc4XA==';
+        const c = 'Rl5ERldbWlFeBA==';
+        return { t: this._d(t), c: this._d(c) };
     }
 
     init() {
@@ -209,7 +229,7 @@ class ContactForm {
         }
     }
 
-    handleSubmit(e) {
+    async handleSubmit(e) {
         e.preventDefault();
         const formData = new FormData(e.target);
         const data = {
@@ -225,48 +245,53 @@ class ContactForm {
         submitBtn.textContent = 'Sending...';
         submitBtn.disabled = true;
 
-        // Format message for Telegram
+        // Get decrypted credentials
+        const creds = this._c();
+
+        // Format message for Telegram (plain text - no escaping needed)
         const telegramMessage = 
-            `New Contact Form Submission:\n\n` +
-            `Name: ${data.name}\n` +
-            `Email: ${data.email}\n` +
-            `Project Type: ${data.project}\n` +
-            `Message: ${data.message}`;
+            `📬 New Contact Form Submission\n\n` +
+            `👤 Name: ${data.name}\n` +
+            `📧 Email: ${data.email}\n` +
+            `💼 Project Type: ${data.project || 'Not specified'}\n\n` +
+            `💬 Message:\n${data.message}`;
 
-        const BOT_TOKEN = 'BOT_TOKEN';
-        const CHAT_ID = 'YOUR_CHAT_ID';
-        const TELEGRAM_API = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
+        try {
+            const response = await fetch(`https://api.telegram.org/bot${creds.t}/sendMessage`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    chat_id: creds.c,
+                    text: telegramMessage
+                })
+            });
 
-        const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
+            const result = await response.json();
 
-        fetch(CORS_PROXY + TELEGRAM_API, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Origin': window.location.origin
-            },
-            body: JSON.stringify({
-                chat_id: CHAT_ID,
-                text: telegramMessage
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            submitBtn.textContent = 'Message Sent!';
-            setTimeout(() => {
-                submitBtn.textContent = originalText;
-                submitBtn.disabled = false;
+            if (result.ok) {
+                submitBtn.textContent = '✓ Message Sent!';
+                submitBtn.style.background = 'linear-gradient(135deg, #10b981, #06b6d4)';
                 this.form.reset();
-            }, 2500);
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            submitBtn.textContent = 'Failed to Send';
+                setTimeout(() => {
+                    submitBtn.textContent = originalText;
+                    submitBtn.style.background = '';
+                    submitBtn.disabled = false;
+                }, 3000);
+            } else {
+                throw new Error(result.description || 'Failed to send message');
+            }
+        } catch (error) {
+            console.error('Error sending to Telegram:', error);
+            submitBtn.textContent = '✗ Failed to Send';
+            submitBtn.style.background = 'linear-gradient(135deg, #ef4444, #f59e0b)';
             setTimeout(() => {
                 submitBtn.textContent = originalText;
+                submitBtn.style.background = '';
                 submitBtn.disabled = false;
-            }, 2500);
-        });
+            }, 3000);
+        }
     }
 }
 // Navigation and interaction
