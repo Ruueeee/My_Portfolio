@@ -657,9 +657,322 @@ body {
     }
 }
 
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@keyframes glow {
+    0%, 100% {
+        box-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary);
+    }
+    50% {
+        box-shadow: 0 0 20px var(--primary), 0 0 30px var(--secondary);
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes borderGlow {
+    0%, 100% {
+        border-color: var(--primary);
+    }
+    50% {
+        border-color: var(--secondary);
+    }
+}
+
 .fade-in {
     opacity: 0;
     animation: fadeInUp 1s ease-out forwards;
+}
+
+/* Interactive Profile Image */
+.profile-image {
+    cursor: pointer;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-image:hover {
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+}
+
+/* Interactive Skill Tags */
+.skill-tag {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.skill-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.skill-tag:hover::before {
+    left: 100%;
+}
+
+.skill-tag:active {
+    transform: scale(0.95);
+}
+
+/* Interactive Timeline Skills */
+.timeline-skill {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.timeline-skill::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.timeline-skill:hover::before {
+    left: 100%;
+}
+
+/* Interactive Project Tags */
+.project-tag {
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.project-tag::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.project-tag:hover::before {
+    left: 100%;
+}
+
+/* Interactive Project Cards */
+.project-card {
+    cursor: pointer;
+}
+
+.project-card:hover .project-header img {
+    transform: scale(1.1);
+    transition: transform 0.5s ease;
+}
+
+.project-header {
+    overflow: hidden;
+}
+
+.project-header img {
+    transition: transform 0.5s ease;
+}
+
+/* Interactive Timeline Items */
+.timeline-item::after {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.timeline-item:hover::after {
+    transform: scale(1.5);
+    box-shadow: 0 0 20px var(--primary);
+}
+
+/* Interactive Contact Icons */
+.contact-icon {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.contact-icon:hover {
+    transform: scale(1.2) rotate(10deg);
+    animation: pulse 1s infinite;
+}
+
+/* Interactive Nav Links */
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-links a:hover::after {
+    width: 80%;
+}
+
+/* Interactive Logo */
+.logo {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logo:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+/* Button Ripple Effect */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease;
+}
+
+.btn:active::after {
+    width: 300px;
+    height: 300px;
+}
+
+/* Interactive Form Inputs */
+.form-group input:hover,
+.form-group textarea:hover {
+    border-color: var(--secondary);
+}
+
+.form-group label {
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus + label,
+.form-group textarea:focus + label {
+    color: var(--primary);
+}
+
+/* Typing Cursor for Hero */
+.typing-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 1em;
+    background: var(--primary);
+    margin-left: 5px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+/* Scroll Progress Indicator */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+    z-index: 1000;
+    transition: width 0.1s ease;
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 99;
+    box-shadow: 0 5px 20px rgba(99, 102, 241, 0.4);
+}
+
+.back-to-top.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.back-to-top:hover {
+    transform: translateY(-5px) scale(1.1);
+    box-shadow: 0 10px 30px rgba(99, 102, 241, 0.6);
+}
+
+.back-to-top::before {
+    content: '↑';
+    font-size: 1.5rem;
+    color: var(--light);
+    font-weight: bold;
+}
+
+/* Hover Tilt Effect for Cards */
+.tilt-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* Section Title Hover */
+.section-title {
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.section-title:hover {
+    letter-spacing: 2px;
 }
 
 /* Responsive Design */

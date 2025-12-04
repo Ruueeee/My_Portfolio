@@ -310,6 +310,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     new ContactForm();
     initThreeJS();
+    initInteractiveFeatures();
+    
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
@@ -329,3 +331,274 @@ document.addEventListener('DOMContentLoaded', function() {
         observer.observe(el);
     });
 });
+
+// Interactive Features
+function initInteractiveFeatures() {
+    // Scroll Progress Indicator
+    createScrollProgress();
+    
+    // Back to Top Button
+    createBackToTop();
+    
+    // Tilt Effect on Cards
+    initTiltEffect();
+    
+    // Typing Effect for Hero
+    initTypingEffect();
+    
+    // Parallax Effect on Scroll
+    initParallaxScroll();
+    
+    // Click Effects on Skill Tags
+    initSkillTagEffects();
+    
+    // Logo Click
+    initLogoClick();
+    
+    // Counter Animation for Stats
+    initCounterAnimation();
+}
+
+// Scroll Progress Bar
+function createScrollProgress() {
+    const progressBar = document.createElement('div');
+    progressBar.className = 'scroll-progress';
+    document.body.prepend(progressBar);
+    
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        progressBar.style.width = scrollPercent + '%';
+    });
+}
+
+// Back to Top Button
+function createBackToTop() {
+    const backToTop = document.createElement('div');
+    backToTop.className = 'back-to-top';
+    backToTop.title = 'Back to Top';
+    document.body.appendChild(backToTop);
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 500) {
+            backToTop.classList.add('visible');
+        } else {
+            backToTop.classList.remove('visible');
+        }
+    });
+    
+    backToTop.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+// Tilt Effect for Project Cards
+function initTiltEffect() {
+    const cards = document.querySelectorAll('.project-card, .skill-category, .timeline-content');
+    
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-5px)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateY(0)';
+        });
+    });
+}
+
+// Typing Effect
+function initTypingEffect() {
+    const heroTitle = document.querySelector('.hero h1');
+    if (!heroTitle) return;
+    
+    const originalText = heroTitle.textContent;
+    heroTitle.innerHTML = '';
+    
+    let i = 0;
+    const cursor = document.createElement('span');
+    cursor.className = 'typing-cursor';
+    heroTitle.appendChild(cursor);
+    
+    function type() {
+        if (i < originalText.length) {
+            heroTitle.insertBefore(document.createTextNode(originalText.charAt(i)), cursor);
+            i++;
+            setTimeout(type, 100);
+        } else {
+            // Remove cursor after typing is done
+            setTimeout(() => {
+                cursor.style.display = 'none';
+            }, 2000);
+        }
+    }
+    
+    // Start typing after a short delay
+    setTimeout(type, 500);
+}
+
+// Parallax Scroll Effect
+function initParallaxScroll() {
+    const sections = document.querySelectorAll('.content-section');
+    
+    window.addEventListener('scroll', () => {
+        const scrollY = window.scrollY;
+        
+        sections.forEach(section => {
+            const rect = section.getBoundingClientRect();
+            const speed = 0.1;
+            
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+                const yPos = (rect.top - window.innerHeight) * speed;
+                section.style.backgroundPositionY = yPos + 'px';
+            }
+        });
+    });
+}
+
+// Skill Tag Click Effects
+function initSkillTagEffects() {
+    const skillTags = document.querySelectorAll('.skill-tag, .timeline-skill, .project-tag');
+    
+    skillTags.forEach(tag => {
+        tag.addEventListener('click', function(e) {
+            // Create ripple effect
+            const ripple = document.createElement('span');
+            ripple.style.cssText = `
+                position: absolute;
+                background: rgba(255,255,255,0.5);
+                border-radius: 50%;
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                pointer-events: none;
+            `;
+            
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            ripple.style.width = ripple.style.height = size + 'px';
+            ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+            ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+            
+            this.style.position = 'relative';
+            this.appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 600);
+            
+            // Bounce animation
+            this.style.animation = 'none';
+            this.offsetHeight; // Trigger reflow
+            this.style.animation = 'pulse 0.3s ease';
+        });
+    });
+    
+    // Add ripple keyframes
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+}
+
+// Logo Click - Scroll to Top
+function initLogoClick() {
+    const logo = document.querySelector('.logo');
+    if (logo) {
+        logo.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
+}
+
+// Counter Animation (can be used for future stats section)
+function initCounterAnimation() {
+    const counters = document.querySelectorAll('.counter');
+    
+    const animateCounter = (counter) => {
+        const target = parseInt(counter.getAttribute('data-target'));
+        const duration = 2000;
+        const step = target / (duration / 16);
+        let current = 0;
+        
+        const updateCounter = () => {
+            current += step;
+            if (current < target) {
+                counter.textContent = Math.floor(current);
+                requestAnimationFrame(updateCounter);
+            } else {
+                counter.textContent = target;
+            }
+        };
+        
+        updateCounter();
+    };
+    
+    const counterObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animateCounter(entry.target);
+                counterObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.5 });
+    
+    counters.forEach(counter => counterObserver.observe(counter));
+}
+
+// Mouse Trail Effect (optional - can be enabled)
+function initMouseTrail() {
+    const trail = [];
+    const trailLength = 10;
+    
+    for (let i = 0; i < trailLength; i++) {
+        const dot = document.createElement('div');
+        dot.style.cssText = `
+            position: fixed;
+            width: ${10 - i}px;
+            height: ${10 - i}px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: ${1 - i / trailLength};
+            transition: transform 0.1s ease;
+        `;
+        document.body.appendChild(dot);
+        trail.push(dot);
+    }
+    
+    let positions = [];
+    
+    document.addEventListener('mousemove', (e) => {
+        positions.unshift({ x: e.clientX, y: e.clientY });
+        positions = positions.slice(0, trailLength);
+        
+        trail.forEach((dot, index) => {
+            if (positions[index]) {
+                dot.style.left = positions[index].x - 5 + 'px';
+                dot.style.top = positions[index].y - 5 + 'px';
+            }
+        });
+    });
+}
